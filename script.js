@@ -7,7 +7,7 @@
   let editingSvcId = null;
   let deleteTargetId = null;
   let deleteTargetType = 'device';
-  let sortKey = 'itemNo';
+  let sortKey = 'employeeName';
   let sortDir = 1;
   let sortKeySvc = 'dateReceived';
   let sortDirSvc = -1;
@@ -107,7 +107,7 @@
       if(dept && d.department !== dept) return false;
       if(chg && d.charger !== chg) return false;
       if(q){
-        const hay = [d.itemNo, d.employeeName, d.department, d.brand, d.model, d.serialNumber, d.remarks].join(' ').toLowerCase();
+        const hay = [d.employeeName, d.department, d.brand, d.model, d.serialNumber, d.remarks].join(' ').toLowerCase();
         if(!hay.includes(q)) return false;
       }
       return true;
@@ -153,7 +153,6 @@
 
     tbody.innerHTML = list.map(d => `
       <tr data-id="${d.id}">
-        <td class="mono">${escapeHtml(d.itemNo)}</td>
         <td class="name">${escapeHtml(d.employeeName)}</td>
         <td class="dept">${escapeHtml(d.department)}</td>
         <td>${escapeHtml(d.brand)}</td>
@@ -205,7 +204,7 @@
     let list = serviceUnits.filter(u => {
       if(status && u.status !== status) return false;
       if(q){
-        const hay = [u.itemNo, u.brand, u.model, u.serialNumber, u.turnedOverBy, u.issue, u.remarks].join(' ').toLowerCase();
+        const hay = [u.brand, u.model, u.serialNumber, u.turnedOverBy, u.issue, u.remarks].join(' ').toLowerCase();
         if(!hay.includes(q)) return false;
       }
       return true;
@@ -249,7 +248,6 @@
 
     svcTbody.innerHTML = list.map(u => `
       <tr data-id="${u.id}">
-        <td class="mono">${escapeHtml(u.itemNo)}</td>
         <td>${escapeHtml(u.brand)}</td>
         <td>${escapeHtml(u.model)}</td>
         <td class="mono">${escapeHtml(u.serialNumber)}</td>
@@ -289,7 +287,6 @@
     document.getElementById('panelSvcTitle').textContent = unit ? 'Edit service unit' : 'Add service unit';
     document.getElementById('panelSvcSub').textContent = unit ? 'Update the service record' : "Log a laptop that's been turned in for service";
 
-    document.getElementById('svc_itemNo').value = unit ? unit.itemNo : '';
     document.getElementById('svc_serialNumber').value = unit ? unit.serialNumber : '';
     document.getElementById('svc_brand').value = unit ? unit.brand : '';
     document.getElementById('svc_model').value = unit ? unit.model : '';
@@ -301,7 +298,7 @@
 
     panelSvc.classList.add('open');
     scrimSvc.classList.add('open');
-    setTimeout(() => document.getElementById('svc_itemNo').focus(), 50);
+    setTimeout(() => document.getElementById('svc_serialNumber').focus(), 50);
   }
 
   function closeSvcPanel(){
@@ -317,7 +314,6 @@
   scrimSvc.addEventListener('click', closeSvcPanel);
 
   document.getElementById('btnSaveSvc').addEventListener('click', async () => {
-    const itemNo = document.getElementById('svc_itemNo').value;
     const serialNumber = document.getElementById('svc_serialNumber').value;
     const brand = document.getElementById('svc_brand').value;
     const model = document.getElementById('svc_model').value;
@@ -328,7 +324,7 @@
     const remarks = document.getElementById('svc_remarks').value;
 
     const valid = validate([
-      ['itemNo', itemNo], ['serialNumber', serialNumber],
+      ['serialNumber', serialNumber],
       ['brand', brand], ['model', model],
       ['turnedOverBy', turnedOverBy], ['issue', issue]
     ], 'fs_');
@@ -336,7 +332,6 @@
 
     const record = {
       id: editingSvcId || uid(),
-      itemNo: itemNo.trim(),
       serialNumber: serialNumber.trim(),
       brand: brand.trim(),
       model: model.trim(),
@@ -371,7 +366,7 @@
       deleteTargetType = 'service';
       const u = serviceUnits.find(x => x.id === deleteTargetId);
       document.getElementById('confirmText').textContent = u
-        ? `“${u.itemNo} — ${u.brand} ${u.model}” will be permanently removed from the service log.`
+        ? `“${u.brand} ${u.model} — ${u.serialNumber}” will be permanently removed from the service log.`
         : 'This record will be permanently deleted.';
       confirmBox.classList.add('open');
       scrimConfirm.classList.add('open');
@@ -460,7 +455,6 @@
     // ---- Assigned Devices sheet ----
     const wsDevices = wb.addWorksheet('Assigned Devices');
     const deviceCols = [
-      { header:'Item No.', key:'itemNo', width:12 },
       { header:'Employee Name', key:'employeeName', width:20 },
       { header:'Department', key:'department', width:16 },
       { header:'Brand', key:'brand', width:14 },
@@ -474,7 +468,6 @@
       { header:'Remarks', key:'remarks', width:32 }
     ];
     const deviceRows = devices.map(d => ({
-      itemNo: d.itemNo,
       employeeName: d.employeeName,
       department: d.department,
       brand: d.brand,
@@ -492,7 +485,6 @@
     // ---- Service Units sheet ----
     const wsService = wb.addWorksheet('Service Units');
     const serviceCols = [
-      { header:'Item No.', key:'itemNo', width:12 },
       { header:'Brand', key:'brand', width:14 },
       { header:'Model', key:'model', width:18 },
       { header:'Serial Number', key:'serialNumber', width:18 },
@@ -503,7 +495,6 @@
       { header:'Remarks', key:'remarks', width:32 }
     ];
     const serviceRows = serviceUnits.map(u => ({
-      itemNo: u.itemNo,
       brand: u.brand,
       model: u.model,
       serialNumber: u.serialNumber,
@@ -561,7 +552,6 @@
     document.getElementById('panelTitle').textContent = device ? 'Edit device' : 'Add device';
     document.getElementById('panelSub').textContent = device ? 'Update the laptop and assignment details' : 'Enter the laptop and assignment details';
 
-    document.getElementById('in_itemNo').value = device ? device.itemNo : '';
     document.getElementById('in_serialNumber').value = device ? device.serialNumber : '';
     document.getElementById('in_dateIssued').value = device ? (device.dateIssued || '') : '';
     document.getElementById('in_brand').value = device ? device.brand : '';
@@ -577,7 +567,7 @@
 
     panel.classList.add('open');
     scrim.classList.add('open');
-    setTimeout(() => document.getElementById('in_itemNo').focus(), 50);
+    setTimeout(() => document.getElementById('in_serialNumber').focus(), 50);
   }
 
   function closePanel(){
@@ -606,7 +596,6 @@
   }
 
   document.getElementById('btnSave').addEventListener('click', async () => {
-    const itemNo = document.getElementById('in_itemNo').value;
     const serialNumber = document.getElementById('in_serialNumber').value;
     const dateIssued = document.getElementById('in_dateIssued').value;
     const brand = document.getElementById('in_brand').value;
@@ -616,7 +605,7 @@
     const remarks = document.getElementById('in_remarks').value;
 
     const valid = validate([
-      ['itemNo', itemNo], ['serialNumber', serialNumber],
+      ['serialNumber', serialNumber],
       ['brand', brand], ['model', model],
       ['employeeName', employeeName], ['department', department]
     ]);
@@ -624,7 +613,6 @@
 
     const record = {
       id: editingId || uid(),
-      itemNo: itemNo.trim(),
       serialNumber: serialNumber.trim(),
       dateIssued: dateIssued || '',
       brand: brand.trim(),
@@ -663,7 +651,7 @@
       deleteTargetType = 'device';
       const d = devices.find(x => x.id === deleteTargetId);
       document.getElementById('confirmText').textContent = d
-        ? `“${d.itemNo} — ${d.employeeName}” will be permanently removed from the inventory.`
+        ? `“${d.employeeName} — ${d.brand} ${d.model}” will be permanently removed from the inventory.`
         : 'This record will be permanently deleted from the inventory.';
       confirmBox.classList.add('open');
       scrimConfirm.classList.add('open');

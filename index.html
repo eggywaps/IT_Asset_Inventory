@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>IT Asset Inventory</title>
+<title>Laptop Inventory</title>
 <link rel="icon" type="image/png" href="RYL_LOGO.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
 <link rel="stylesheet" href="style.css">
@@ -15,7 +15,7 @@
     <div class="brand">
       <div class="brand-mark"><img src="RYL_LOGO.png" alt="Company logo"></div>
       <div>
-        <h1>IT Asset Inventory</h1>
+        <h1>IT Inventory</h1>
         <p>Assigned laptops and units currently in for service</p>
       </div>
     </div>
@@ -69,7 +69,6 @@
     <table id="invTable">
       <thead>
         <tr>
-          <th data-key="itemNo">Item No.<span class="arrow"></span></th>
           <th data-key="employeeName">Employee<span class="arrow"></span></th>
           <th data-key="department">Department<span class="arrow"></span></th>
           <th data-key="brand">Brand<span class="arrow"></span></th>
@@ -104,7 +103,7 @@
     <div class="toolbar">
       <div class="search-wrap">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-        <input type="search" id="searchInputSvc" placeholder="Search item no., brand, model, serial number, or turned over by…">
+        <input type="search" id="searchInputSvc" placeholder="Search brand, model, serial number, or turned over by…">
       </div>
       <select class="filter" id="filterSvcStatus">
         <option value="">Status: any</option>
@@ -124,7 +123,6 @@
       <table id="svcTable">
         <thead>
           <tr>
-            <th data-key="itemNo">Item No.<span class="arrow"></span></th>
             <th data-key="brand">Brand<span class="arrow"></span></th>
             <th data-key="model">Model<span class="arrow"></span></th>
             <th data-key="serialNumber">Serial No.<span class="arrow"></span></th>
@@ -172,17 +170,10 @@
     <form id="deviceForm">
       <div class="section-label">DEVICE</div>
 
-      <div class="row-2">
-        <div class="field" id="f_itemNo">
-          <label>Item No. <span class="hint">required</span></label>
-          <input type="text" class="mono" id="in_itemNo" placeholder="e.g. LPT-0042">
-          <div class="err-text">Item No. is required.</div>
-        </div>
-        <div class="field" id="f_serialNumber">
-          <label>Serial Number <span class="hint">required</span></label>
-          <input type="text" class="mono" id="in_serialNumber" placeholder="e.g. 5CD1234ABC">
-          <div class="err-text">Serial number is required.</div>
-        </div>
+      <div class="field" id="f_serialNumber">
+        <label>Serial Number <span class="hint">required</span></label>
+        <input type="text" class="mono" id="in_serialNumber" placeholder="e.g. 5CD1234ABC">
+        <div class="err-text">Serial number is required.</div>
       </div>
 
       <div class="row-2">
@@ -285,17 +276,10 @@
     <form id="svcForm">
       <div class="section-label">DEVICE</div>
 
-      <div class="row-2">
-        <div class="field" id="fs_itemNo">
-          <label>Item No. <span class="hint">required</span></label>
-          <input type="text" class="mono" id="svc_itemNo" placeholder="e.g. LPT-0042">
-          <div class="err-text">Item No. is required.</div>
-        </div>
-        <div class="field" id="fs_serialNumber">
-          <label>Serial Number <span class="hint">required</span></label>
-          <input type="text" class="mono" id="svc_serialNumber" placeholder="e.g. 5CD1234ABC">
-          <div class="err-text">Serial number is required.</div>
-        </div>
+      <div class="field" id="fs_serialNumber">
+        <label>Serial Number <span class="hint">required</span></label>
+        <input type="text" class="mono" id="svc_serialNumber" placeholder="e.g. 5CD1234ABC">
+        <div class="err-text">Serial number is required.</div>
       </div>
 
       <div class="row-2">
