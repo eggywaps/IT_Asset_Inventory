@@ -1,6 +1,6 @@
 (function(){
-  const STORAGE_KEY = 'inventory';
-  const STORAGE_KEY_SVC = 'serviceUnits';
+  const devicesDocRef = window.db.collection('inventory').doc('devices');
+  const serviceDocRef = window.db.collection('inventory').doc('serviceUnits');
   let devices = [];
   let serviceUnits = [];
   let editingId = null;
@@ -42,39 +42,48 @@
     showToast._t = setTimeout(()=> toast.classList.remove('show'), 2200);
   }
 
-  async function loadDevices(){
-    try{
-      const raw = localStorage.getItem(STORAGE_KEY);
-      devices = raw ? JSON.parse(raw) : [];
-    }catch(e){
-      devices = [];
-    }
-    render();
+  // ---------- Firestore: live sync so every device/browser sees the same data ----------
+  function attachDevicesListener(){
+    devicesDocRef.onSnapshot(
+      (snap) => {
+        devices = (snap.exists && Array.isArray(snap.data().items)) ? snap.data().items : [];
+        render();
+      },
+      (err) => {
+        console.error(err);
+        showToast('Could not connect to the database.');
+      }
+    );
   }
 
   async function persist(){
     try{
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(devices));
+      await devicesDocRef.set({ items: devices });
     }catch(e){
-      showToast('Storage error — changes may not be saved.');
+      console.error(e);
+      showToast('Could not save — check your connection.');
     }
   }
 
-  async function loadServiceUnits(){
-    try{
-      const raw = localStorage.getItem(STORAGE_KEY_SVC);
-      serviceUnits = raw ? JSON.parse(raw) : [];
-    }catch(e){
-      serviceUnits = [];
-    }
-    renderService();
+  function attachServiceListener(){
+    serviceDocRef.onSnapshot(
+      (snap) => {
+        serviceUnits = (snap.exists && Array.isArray(snap.data().items)) ? snap.data().items : [];
+        renderService();
+      },
+      (err) => {
+        console.error(err);
+        showToast('Could not connect to the database.');
+      }
+    );
   }
 
   async function persistService(){
     try{
-      localStorage.setItem(STORAGE_KEY_SVC, JSON.stringify(serviceUnits));
+      await serviceDocRef.set({ items: serviceUnits });
     }catch(e){
-      showToast('Storage error — changes may not be saved.');
+      console.error(e);
+      showToast('Could not save — check your connection.');
     }
   }
 
@@ -694,6 +703,6 @@
     }
   });
 
-  loadDevices();
-  loadServiceUnits();
+  attachDevicesListener();
+  attachServiceListener();
 })();
