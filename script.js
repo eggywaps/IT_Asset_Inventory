@@ -44,8 +44,8 @@
 
   async function loadDevices(){
     try{
-      const res = await window.storage.get(STORAGE_KEY, true);
-      devices = res && res.value ? JSON.parse(res.value) : [];
+      const raw = localStorage.getItem(STORAGE_KEY);
+      devices = raw ? JSON.parse(raw) : [];
     }catch(e){
       devices = [];
     }
@@ -54,8 +54,7 @@
 
   async function persist(){
     try{
-      const res = await window.storage.set(STORAGE_KEY, JSON.stringify(devices), true);
-      if(!res){ showToast('Could not save — try again.'); }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(devices));
     }catch(e){
       showToast('Storage error — changes may not be saved.');
     }
@@ -63,8 +62,8 @@
 
   async function loadServiceUnits(){
     try{
-      const res = await window.storage.get(STORAGE_KEY_SVC, true);
-      serviceUnits = res && res.value ? JSON.parse(res.value) : [];
+      const raw = localStorage.getItem(STORAGE_KEY_SVC);
+      serviceUnits = raw ? JSON.parse(raw) : [];
     }catch(e){
       serviceUnits = [];
     }
@@ -73,8 +72,7 @@
 
   async function persistService(){
     try{
-      const res = await window.storage.set(STORAGE_KEY_SVC, JSON.stringify(serviceUnits), true);
-      if(!res){ showToast('Could not save — try again.'); }
+      localStorage.setItem(STORAGE_KEY_SVC, JSON.stringify(serviceUnits));
     }catch(e){
       showToast('Storage error — changes may not be saved.');
     }
